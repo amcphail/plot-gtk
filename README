@@ -1,0 +1,4 @@
+HOWTO
+
+cabal install plot-gtk
+

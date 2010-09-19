@@ -1,0 +1,46 @@
+Name:                plot-gtk
+Version:             0.0.99
+License:             BSD3
+License-file:        LICENSE
+Copyright:           (c) A.V.H. McPhail 2010
+Author:              Vivian McPhail
+Maintainer:          haskell.vivian.mcphail <at> gmail <dot> com
+Stability:           experimental
+Homepage:            http://code.haskell.org/plot
+Synopsis:            A library to use plot package with gtk
+Description:         
+     Allows use of 'plot' package with GTK
+     .
+     * Provides a mechanism to display and update plots from GHCi
+     .
+
+Category:            Graphics
+
+Tested-with:         GHC==6.12.1
+Cabal-version:       >= 1.8
+Build-type:          Simple
+
+Extra-source-files:  README, CHANGES, LICENSE
+
+library
+
+  Build-Depends:     base >= 4 && < 5,
+                     mtl,
+                     gtk >= 0.11 && < 0.12,
+                     plot
+
+  Extensions:        
+
+  hs-source-dirs:    lib
+
+  Exposed-Modules:   Graphics.Rendering.Plot.Gtk
+
+  Other-modules:     
+
+  ghc-options:       -Wall -fno-warn-unused-binds
+
+  ghc-prof-options:  -auto
+
+    source-repository head
+        type:     darcs
+        location: darcs get http://code.haskell.org/plot/gtk
