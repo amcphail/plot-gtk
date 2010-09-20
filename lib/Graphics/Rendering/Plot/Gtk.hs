@@ -12,9 +12,9 @@
 
 module Graphics.Rendering.Plot.Gtk (
                                     -- * Interface
-                                    FigureHandle()
+                                    PlotHandle()
                                     , display
-                                    , withFigureHandle
+                                    , withPlotHandle
                                     -- * Example
                                     -- $example
                                    ) where
@@ -23,22 +23,23 @@ module Graphics.Rendering.Plot.Gtk (
 
 import Control.Concurrent
 
-import Control.Monad.Trans
-
 import Graphics.UI.Gtk
+
+import Graphics.UI.Gtk.Plot
 
 import Graphics.Rendering.Plot
 
 -----------------------------------------------------------------------------
 
-type FigureHandle = MVar (Figure ())
+data PlotHandle = PH (MVar (Figure ())) (MVar DrawingArea)
 
 -----------------------------------------------------------------------------
 
 -- | create a new figure and display the plot
-display :: Figure () -> IO FigureHandle
+display :: Figure () -> IO PlotHandle
 display f = do
-   figure <- newMVar f
+   fig <- newMVar f
+   handle <- newEmptyMVar :: IO (MVar DrawingArea)
    _ <- forkIO $ do
                  _ <- initGUI       -- is start
                  --
@@ -51,26 +52,28 @@ display f = do
                  --
                  frame <- frameNew
                  containerAdd window frame
-                 canvas <- drawingAreaNew
+                 canvas <- plotNew fig
                  containerAdd frame canvas
-                 widgetModifyBg canvas StateNormal (Color 65535 65535 65535)
+                 --
+                 putMVar handle canvas
                  --
                  widgetShowAll window 
-                 --
-                 _ <- ($) on canvas exposeEvent $ tryEvent $ do s <- liftIO $ widgetGetSize canvas
-                                                                drw <- liftIO $ widgetGetDrawWindow canvas
-                                                                liftIO $ withMVar figure $ \fig -> renderWithDrawable drw (render fig s)
                  --
                  _ <- onDestroy window mainQuit
                  --
                  mainGUI
-   return figure
+   return $ PH fig handle
+
 
 -----------------------------------------------------------------------------
 
--- | perform some actions on the supplied 'FigureHandle'
-withFigureHandle :: FigureHandle -> Figure () -> IO ()
-withFigureHandle handle figure = modifyMVar_ handle $ \fig -> return (fig >> figure)
+-- | perform some actions on the supplied 'PlotHandle'
+withPlotHandle :: PlotHandle -> Figure () -> IO ()
+withPlotHandle (PH fm cm) fig = do
+                                modifyMVar_ fm $ \f -> return (f >> fig)
+                                withMVar cm (\canvas -> do
+                                                        (w,h) <- widgetGetSize canvas
+                                                        widgetQueueDrawArea canvas 0 0 w h) 
 
 -----------------------------------------------------------------------------
 
@@ -132,12 +135,12 @@ observe the results:
 
 and then update the figure
 
->>> withFigureHandle figure1 $ withPlot (1,2) $ setDataset ms
+>>> withPlotHandle figure1 $ withPlot (1,2) $ setDataset ms
 
 and update again
 
->>> withFigureHandle figure1 $ withPlot (1,2) $ do { addAxis XAxis (Side Lower) $ setTickLabelFormat "%.0f" }
->>> let withfig1_12 = \d -> withFigureHandle figure1 $ withPlot (1,2) d
+>>> withPlotHandle figure1 $ withPlot (1,2) $ do { addAxis XAxis (Side Lower) $ setTickLabelFormat "%.0f" }
+>>> let withfig1_12 = \d -> withPlotHandle figure1 $ withPlot (1,2) d
 >>> withfig1_12 $ addAxis YAxis (Side Lower) $ setTickLabelFormat "%.0f"
 >>> withfig1_12 $ setRangeFromData XAxis Lower
 >>> withfig1_12 $ setRangeFromData YAxis Lower

@@ -11,9 +11,22 @@
 -----------------------------------------------------------------------------
 
 module Graphics.UI.Gtk.Plot (
+                             FigureHandle()
+                             -- * Drawing Area
+                             , plotNew
+                             -- * Attributes
+                             , figure
                             ) where
 
 -----------------------------------------------------------------------------
+
+import System.IO.Unsafe
+
+import Control.Concurrent.MVar
+
+import Control.Monad.Trans
+
+import System.Glib.GObject
 
 import Graphics.UI.Gtk
 
@@ -23,21 +36,41 @@ import Graphics.Rendering.Plot.Render
 
 -----------------------------------------------------------------------------
 
-plotNew :: Frame -> Figure () -> IO Plot
-plotNew frame figure = do
+type FigureHandle = MVar (Figure ())
+
+-----------------------------------------------------------------------------
+
+-- | create a new 'Figure' plot
+plotNew :: FigureHandle -> IO DrawingArea
+plotNew f = do
    canvas <- drawingAreaNew
-   containerAdd frame canvas
-   widgetModifyBg canvas StateNormal (Color 65535 65535 65535)
+   
+   set canvas [maybeFigure := (Just f)]
 
-   -- unclear here
-   {-
-     newAttr (\this -> getFigureData this->uniqueID) 
-             (\this fig -> setFigureData this->uniqueID fig)
-   -}
+   _ <- on canvas exposeEvent $ tryEvent $ do s <- liftIO $ widgetGetSize canvas
+                                              drw <- liftIO $ widgetGetDrawWindow canvas
+                                              fig <- liftIO $ get canvas figure 
+                                              liftIO $ renderWithDrawable drw (render fig s)
 
-   on canvas exposeEvent $ tryEvent $ do s <- liftIO $ widgetGetSize canvas
-                                         drw <- liftIO $ widgetGetDrawWindow canvas
-                                         liftIO $ renderWithDrawable drw (render figure s)
+   return canvas
+
+-----------------------------------------------------------------------------
+
+-- | the figure attribute
+figure :: Attr DrawingArea (Figure ())
+figure = newAttr getFigure setFigure
+   where getFigure o = do
+                       Just f <- get o maybeFigure 
+                       readMVar f 
+         setFigure o f = set o [maybeFigure :~> (\(Just h) -> do
+                                                              putMVar h f
+                                                              return $ Just h)]
+                                                     
+-----------------------------------------------------------------------------
+
+maybeFigure :: Attr DrawingArea (Maybe FigureHandle)
+maybeFigure = unsafePerformIO $ objectCreateAttribute
+{-# NOINLINE maybeFigure #-}
 
 -----------------------------------------------------------------------------
 
