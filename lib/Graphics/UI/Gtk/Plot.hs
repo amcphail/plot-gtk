@@ -36,7 +36,7 @@ import Graphics.Rendering.Plot.Render
 
 -----------------------------------------------------------------------------
 
-type FigureHandle = MVar (Figure ())
+type FigureHandle = MVar FigureState
 
 -----------------------------------------------------------------------------
 
@@ -50,14 +50,14 @@ plotNew f = do
    _ <- on canvas exposeEvent $ tryEvent $ do s <- liftIO $ widgetGetSize canvas
                                               drw <- liftIO $ widgetGetDrawWindow canvas
                                               fig <- liftIO $ get canvas figure 
-                                              liftIO $ renderWithDrawable drw (render fig s)
+                                              liftIO $ renderWithDrawable drw (renderFigureState fig s)
 
    return canvas
 
 -----------------------------------------------------------------------------
 
 -- | the figure attribute
-figure :: Attr DrawingArea (Figure ())
+figure :: Attr DrawingArea FigureState
 figure = newAttr getFigure setFigure
    where getFigure o = do
                        Just f <- get o maybeFigure 

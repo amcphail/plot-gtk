@@ -31,14 +31,15 @@ import Graphics.Rendering.Plot
 
 -----------------------------------------------------------------------------
 
-data PlotHandle = PH (MVar (Figure ())) (MVar DrawingArea)
+data PlotHandle = PH FigureHandle (MVar DrawingArea)
 
 -----------------------------------------------------------------------------
 
 -- | create a new figure and display the plot
 display :: Figure () -> IO PlotHandle
 display f = do
-   fig <- newMVar f
+   fs <- newFigureState f
+   fig <- newMVar fs
    handle <- newEmptyMVar :: IO (MVar DrawingArea)
    _ <- forkIO $ do
                  _ <- initGUI       -- is start
@@ -70,7 +71,7 @@ display f = do
 -- | perform some actions on the supplied 'PlotHandle'
 withPlotHandle :: PlotHandle -> Figure () -> IO ()
 withPlotHandle (PH fm cm) fig = do
-                                modifyMVar_ fm $ \f -> return (f >> fig)
+                                modifyMVar_ fm $ \f -> return (updateFigureState f fig)
                                 withMVar cm (\canvas -> do
                                                         (w,h) <- widgetGetSize canvas
                                                         widgetQueueDrawArea canvas 0 0 w h) 
