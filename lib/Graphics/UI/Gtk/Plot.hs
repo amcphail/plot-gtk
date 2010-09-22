@@ -8,6 +8,8 @@
 -- Stability   :  provisional
 -- Portability :  portable
 --
+-- A 'DrawingArea' widget that displays 'Figure's
+--
 -----------------------------------------------------------------------------
 
 module Graphics.UI.Gtk.Plot (

@@ -7,7 +7,7 @@ Author:              Vivian McPhail
 Maintainer:          haskell.vivian.mcphail <at> gmail <dot> com
 Stability:           experimental
 Homepage:            http://code.haskell.org/plot
-Synopsis:            A library to use plot package with gtk
+Synopsis:            GTK plots and interaction with GHCi
 Description:         
      Allows use of 'plot' package with GTK
      .
@@ -28,7 +28,7 @@ library
                      mtl,
                      glib >= 0.11 && < 0.12,
                      gtk >= 0.11 && < 0.12,
-                     plot
+                     plot < 0.2
 
   Extensions:        
 

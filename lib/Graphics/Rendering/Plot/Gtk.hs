@@ -8,6 +8,8 @@
 -- Stability   :  provisional
 -- Portability :  portable
 --
+-- Enables the display of 'Figure's interactively through GHCi
+--
 -----------------------------------------------------------------------------
 
 module Graphics.Rendering.Plot.Gtk (
@@ -72,7 +74,7 @@ display f = do
 withPlotHandle :: PlotHandle -> Figure () -> IO ()
 withPlotHandle (PH fm cm) fig = do
                                 modifyMVar_ fm $ \f -> return (updateFigureState f fig)
-                                withMVar cm (\canvas -> do
+                                postGUIAsync $ withMVar cm (\canvas -> do
                                                         (w,h) <- widgetGetSize canvas
                                                         widgetQueueDrawArea canvas 0 0 w h) 
 
