@@ -49,10 +49,10 @@ plotNew f = do
    
    set canvas [maybeFigure := (Just f)]
 
-   _ <- on canvas exposeEvent $ tryEvent $ do s <- liftIO $ widgetGetSize canvas
-                                              drw <- liftIO $ widgetGetDrawWindow canvas
-                                              fig <- liftIO $ get canvas figure 
-                                              liftIO $ renderWithDrawable drw (renderFigureState fig s)
+   _ <- on canvas exposeEvent $ tryEvent $ liftIO $ do s <- widgetGetSize canvas
+                                                       drw <- widgetGetDrawWindow canvas
+                                                       fig <- get canvas figure 
+                                                       renderWithDrawable drw (renderFigureState fig s)
 
    return canvas
 
