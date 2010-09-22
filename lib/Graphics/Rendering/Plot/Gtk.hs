@@ -43,7 +43,7 @@ display f = do
    fs <- newFigureState f
    fig <- newMVar fs
    handle <- newEmptyMVar :: IO (MVar DrawingArea)
-   _ <- forkIO $ do
+   _ <- forkOS $ runInBoundThread $ do
                  _ <- initGUI       -- is start
                  --
                  window <- windowNew
