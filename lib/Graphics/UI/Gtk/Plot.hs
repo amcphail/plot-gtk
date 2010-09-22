@@ -65,7 +65,7 @@ figure = newAttr getFigure setFigure
                        Just f <- get o maybeFigure 
                        readMVar f 
          setFigure o f = set o [maybeFigure :~> (\(Just h) -> do
-                                                              putMVar h f
+                                                              modifyMVar_ h (\_ -> return f)
                                                               return $ Just h)]
                                                      
 -----------------------------------------------------------------------------
