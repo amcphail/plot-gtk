@@ -17,6 +17,7 @@ module Graphics.Rendering.Plot.Gtk (
                                     PlotHandle()
                                     , display
                                     , withPlotHandle
+                                    , writePlotHandle
                                     -- * Example
                                     -- $example
                                    ) where
@@ -77,6 +78,12 @@ withPlotHandle (PH fm cm) fig = do
                                 postGUIAsync $ withMVar cm (\canvas -> do
                                                         (w,h) <- widgetGetSize canvas
                                                         widgetQueueDrawArea canvas 0 0 w h) 
+
+-- | write the 'Figure' to disk
+writePlotHandle :: PlotHandle -> OutputType -> FilePath -> (Int,Int) -> IO ()
+writePlotHandle (PH fm _cm) ty fn s = do
+                                      fig <- readMVar fm
+                                      writeFigureState ty fn s fig
 
 -----------------------------------------------------------------------------
 
