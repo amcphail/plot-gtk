@@ -14,12 +14,6 @@
 -- those functions appended with 'H' which return a 'PlotHandle' for
 -- interactive update.
 --
--- Comments and function signatures were copied from "hmatrix:Graphics.Plot"
--- which is released under a GPL-like licence
---
--- gnuplot*, splot, mesh, and mesh' are copied from "hmatrix:Graphics.Plot"
--- (c) A. Ruiz
---
 -----------------------------------------------------------------------------
 
 module Graphics.Rendering.Plot.HMatrix (
@@ -31,15 +25,14 @@ module Graphics.Rendering.Plot.HMatrix (
                                        , meshdom
                                         -- * Compatability
                                        , matrixToPGM
-                                       , gnuplotX, gnuplotpdf, gnuplotWin
-                                        -- * Undefined functions
-                                       , splot, mesh, mesh'
+                                        -- * Gnuplot functions
+                                       , splot, mesh
                                        ) where
 
 -----------------------------------------------------------------------------
+{- Function signatures copied from hmatrix, (c) A. Ruiz -}
 
-import Numeric.Vector
-import Numeric.Matrix
+import Numeric.LinearAlgebra
 
 {- COMPATABILITY -} 
 import Data.List(intersperse)
@@ -89,7 +82,11 @@ plotH :: [Vector Double -> Vector Double] -> (Double,Double) -> Int -> IO PlotHa
 plotH fs r n = display $ do
                          let ts = linspace n r
                          S.plot (Line,ts,mapf fs ts)
-
+{-
+                         withPlot (1,1) $ do
+                                          withAxis XAxis (Side Lower) $ setTickLabelFormat "%.1f"
+                                          withAxis YAxis (Side Lower) $ setTickLabelFormat "%.1f"
+-}
 -----------------------------------------------------------------------------
 
 {- | Draws a parametric curve. For instance, to draw a spiral we can do something like:
@@ -109,7 +106,7 @@ parametricPlotH :: (Vector Double->(Vector Double,Vector Double)) -> (Double, Do
 parametricPlotH f r n = display $ do
                                   let t = linspace n r
                                       (fx,fy) = f t
-                                  S.plot (Line,fx,[fy])
+                                  S.plot [(Line,fx,fy)]
 
 -----------------------------------------------------------------------------
 
@@ -131,7 +128,6 @@ prep = (++"e\n\n") . unlines . map (unwords . (map show))
 
 In certain versions you can interactively rotate the graphic using the mouse.
 
-UNDEFINED: (c) A. Ruiz
 -}
 mesh :: Matrix Double -> IO ()
 mesh m = gnuplotX (command++dat) where
@@ -152,8 +148,6 @@ mesh' m = do
 > > let f x y = cos (x + y) 
 > > splot f (0,pi) (0,2*pi) 50    
 
-UNDEFINED: (c) A.Ruiz
-
 -}
 splot :: (Matrix Double->Matrix Double->Matrix Double) -> (Double,Double) -> (Double,Double) -> Int -> IO () 
 splot f rx ry n = mesh' z where
@@ -163,7 +157,6 @@ splot f rx ry n = mesh' z where
 -----------------------------------------------------------------------------
 
 -- | writes a matrix to pgm image file
---     (c) A. Ruiz, hmatrix package
 matrixToPGM :: Matrix Double -> String
 matrixToPGM m = header ++ unlines (map unwords ll) where
     c = cols m
