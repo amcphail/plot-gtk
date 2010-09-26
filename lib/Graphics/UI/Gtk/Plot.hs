@@ -43,6 +43,7 @@ type FigureHandle = MVar FigureState
 -----------------------------------------------------------------------------
 
 -- | create a new 'Figure' plot
+--     click on the window to save
 plotNew :: FigureHandle -> IO DrawingArea
 plotNew f = do
    canvas <- drawingAreaNew

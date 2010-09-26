@@ -39,6 +39,7 @@ data PlotHandle = PH FigureHandle (MVar DrawingArea)
 -----------------------------------------------------------------------------
 
 -- | create a new figure and display the plot
+--     click on the window to save
 display :: Figure () -> IO PlotHandle
 display f = do
    fs <- newFigureState f
