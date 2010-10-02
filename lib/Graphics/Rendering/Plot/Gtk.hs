@@ -75,8 +75,8 @@ display f = do
                                                 ffn <- fileFilterGetName ff
                                                 let ot = filterNameType ffn
                                                 s <- widgetGetSize canvas
-                                                fig <- get canvas figure
-                                                writeFigureState ot fn s fig
+                                                fig' <- get canvas figure
+                                                writeFigureState ot fn s fig'
                                        ResponseCancel -> return ()
                                      widgetHide fc
 
