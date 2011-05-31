@@ -15,7 +15,7 @@
 module Graphics.Rendering.Plot.Gtk (
                                     -- * Interface
                                     PlotHandle()
-                                    , display
+                                    , display, destroy
                                     , withPlotHandle
                                     , writePlotHandle
                                     -- * Example
@@ -87,7 +87,16 @@ display f = do
                  mainGUI
    return $ PH fig handle
 
+-----------------------------------------------------------------------------
 
+-- | close a plot
+destroy :: PlotHandle -> IO ()
+destroy (PH _ handle) = do
+  da <- readMVar handle
+  Just fr <- widgetGetParent da
+  Just wi <- widgetGetParent fr
+  widgetDestroy wi
+  
 -----------------------------------------------------------------------------
 
 -- | perform some actions on the supplied 'PlotHandle'
@@ -208,6 +217,13 @@ and update again
 >>> withfig1_12 $ setRangeFromData XAxis Lower
 >>> withfig1_12 $ setRangeFromData YAxis Lower
 
+with the multiline feature
+
+>>> :set +m
+>>> withPlotHandle figure1 $ withPlot (1,2) $ do 
+>>>    addAxis XAxis (Side Lower) $ setTickLabelFormat "%.0f" 
+>>>    setRangeFromData XAxis Lower
+>>>    setRangeFromData YAxis Lower
 -}
 -----------------------------------------------------------------------------
 

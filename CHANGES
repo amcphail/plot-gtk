@@ -3,3 +3,21 @@
 
 0.1.0.1:
 		* unshadowed fig in Gtk.hs
+
+0.1.0.2:
+                * updated documentation for multiline example
+
+0.1.0.3:
+		* bumped gtk dependency
+
+0.1.0.4:
+		* bumped hmatrix dependency
+
+0.1.0.5:
+		* added a destroy method
+
+0.1.0.6:
+		* export destroy method
+
+0.1.0.7:
+		*
