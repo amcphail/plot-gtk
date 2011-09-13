@@ -19,5 +19,5 @@
 0.1.0.6:
 		* export destroy method
 
-0.1.0.7:
-		*
+0.1.0.8:
+		* removed hmatrix upper dependency

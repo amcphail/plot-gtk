@@ -1,5 +1,5 @@
 Name:                plot-gtk
-Version:             0.1.0.7
+Version:             0.1.0.8
 License:             BSD3
 License-file:        LICENSE
 Copyright:           (c) A.V.H. McPhail 2010
@@ -29,7 +29,7 @@ library
                      process,
                      glib >= 0.11 && < 0.13,
                      gtk >= 0.11 && < 0.13,
-                     hmatrix >= 0.10 && < 0.12,
+                     hmatrix >= 0.10,
                      plot < 0.2
 
   Extensions:        
