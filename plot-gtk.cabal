@@ -1,5 +1,5 @@
 Name:                plot-gtk
-Version:             0.1.0.8
+Version:             0.1.0.9
 License:             BSD3
 License-file:        LICENSE
 Copyright:           (c) A.V.H. McPhail 2010
@@ -47,5 +47,5 @@ library
   ghc-prof-options:  -auto
 
 source-repository head
-  type:     darcs
-  location: http://code.haskell.org/plot/gtk
+  type:     git
+  location: git@github.com:amcphail/gtk.git
