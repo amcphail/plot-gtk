@@ -24,3 +24,6 @@
 
 0.1.0.9:	
 		* switch to github
+
+0.1.0.10:
+		* fixed .cabal repository line

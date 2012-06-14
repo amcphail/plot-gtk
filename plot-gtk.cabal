@@ -1,5 +1,5 @@
 Name:                plot-gtk
-Version:             0.1.0.9
+Version:             0.1.0.10
 License:             BSD3
 License-file:        LICENSE
 Copyright:           (c) A.V.H. McPhail 2010
@@ -48,4 +48,4 @@ library
 
 source-repository head
   type:     git
-  location: git@github.com:amcphail/gtk.git
+  location: https://github.com/amcphail/gtk.git
