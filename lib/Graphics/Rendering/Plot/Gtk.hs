@@ -25,6 +25,7 @@ module Graphics.Rendering.Plot.Gtk (
 -----------------------------------------------------------------------------
 
 import Control.Monad.Trans
+import Control.Monad
 
 import Control.Concurrent
 
@@ -34,57 +35,74 @@ import Graphics.UI.Gtk.Plot
 
 import Graphics.Rendering.Plot
 
+import System.IO.Unsafe
+
 -----------------------------------------------------------------------------
 
 data PlotHandle = PH FigureHandle (MVar DrawingArea)
 
 -----------------------------------------------------------------------------
 
+guiInit :: MVar Bool
+{-# NOINLINE guiInit #-}
+guiInit = unsafePerformIO (newMVar False)
+
+initGUIOnce :: IO ()
+initGUIOnce = do
+  init <- readMVar guiInit 
+  when (not init) $ do
+    _ <- forkOS $ runInBoundThread $ do
+      _ <- unsafeInitGUIForThreadedRTS
+      swapMVar guiInit True
+      mainGUI --return ()
+    return ()
+  return ()
+
 -- | create a new figure and display the plot
 --     click on the window to save
 display :: Figure () -> IO PlotHandle
 display f = do
+   initGUIOnce -- initGUIOnce
    fs <- newFigureState f
    fig <- newMVar fs
    handle <- newEmptyMVar :: IO (MVar DrawingArea)
-   _ <- forkOS $ runInBoundThread $ do
-                 _ <- initGUI       -- is start
-                 --
-                 window <- windowNew
-                 set window [ windowTitle := "Figure"
-                            , windowDefaultWidth := 400
-                            , windowDefaultHeight := 300
-                            , containerBorderWidth := 1
-                            ]
-                 --
-                 frame <- frameNew
-                 containerAdd window frame
-                 canvas <- plotNew fig
-                 containerAdd frame canvas
-                 --
-                 putMVar handle canvas
-                 --
-                 _ <- on canvas buttonPressEvent $ tryEvent $ liftIO $ do 
-                                     fc <- newPlotSaveDialog
-                                     widgetShow fc
-                                     rsp <- dialogRun fc
-                                     case rsp of
-                                       ResponseAccept -> do 
-                                                Just fn <- fileChooserGetFilename fc
-                                                Just ff <- fileChooserGetFilter fc
-                                                ffn <- fileFilterGetName ff
-                                                let ot = filterNameType ffn
-                                                s <- widgetGetSize canvas
-                                                fig' <- get canvas figure
-                                                writeFigureState ot fn s fig'
-                                       ResponseCancel -> return ()
-                                     widgetHide fc
+   --
+   postGUIAsync $ do
+     window <- windowNew
+     set window [ windowTitle := "Figure"
+                , windowDefaultWidth := 400
+                , windowDefaultHeight := 300
+                , containerBorderWidth := 1
+                ]
+     --
+     frame <- frameNew
+     containerAdd window frame
+     canvas <- plotNew fig
+     containerAdd frame canvas
+     --
+     putMVar handle canvas
+     --
+     _ <- on canvas buttonPressEvent $ tryEvent $ liftIO $ do 
+              fc <- newPlotSaveDialog
+              widgetShow fc
+              rsp <- dialogRun fc
+              case rsp of
+                ResponseAccept -> do 
+                  Just fn <- fileChooserGetFilename fc
+                  Just ff <- fileChooserGetFilter fc
+                  ffn <- fileFilterGetName ff
+                  let ot = filterNameType ffn
+                  s <- widgetGetSize canvas
+                  fig' <- get canvas figure
+                  writeFigureState ot fn s fig'
+                ResponseCancel -> return ()
+              widgetHide fc
 
-                 widgetShowAll window 
-                 --
-                 _ <- onDestroy window mainQuit
-                 --
-                 mainGUI
+     widgetShowAll window 
+     --
+     -- _ <- onDestroy window mainQuit
+     --
+     return () --mainGUI
    return $ PH fig handle
 
 -----------------------------------------------------------------------------
