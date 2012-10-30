@@ -48,4 +48,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/amcphail/gtk.git
+  location: https://github.com/amcphail/plot-gtk.git
