@@ -58,11 +58,17 @@ initGUIOnce = do
     return ()
   return ()
 
+guiNumWindows :: MVar Int
+{-# NOINLINE guiNumWindows #-}
+guiNumWindows = unsafePerformIO (newMVar 0)
+
+-----------------------------------------------------------------------------
+
 -- | create a new figure and display the plot
 --     click on the window to save
 display :: Figure () -> IO PlotHandle
 display f = do
-   initGUIOnce -- initGUIOnce
+   initGUIOnce
    fs <- newFigureState f
    fig <- newMVar fs
    handle <- newEmptyMVar :: IO (MVar DrawingArea)
@@ -100,7 +106,11 @@ display f = do
 
      widgetShowAll window 
      --
-     -- _ <- onDestroy window mainQuit
+     _ <- onDestroy window $ do
+                    modifyMVar_ guiNumWindows (return . (\x -> x-1))
+                    nw <- readMVar guiNumWindows
+                    when (nw <= 0) mainQuit
+                    return ()
      --
      return () --mainGUI
    return $ PH fig handle

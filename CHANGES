@@ -30,3 +30,7 @@
 
 0.1.0.11:
 		* fixed .cabal repository line
+
+0.2:
+		* fix window behaviour by initialising once only and counting 
+                    open windows to know when to quit 
