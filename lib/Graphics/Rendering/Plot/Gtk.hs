@@ -106,11 +106,13 @@ display f = do
 
      widgetShowAll window 
      --
+{-
      _ <- onDestroy window $ do
                     modifyMVar_ guiNumWindows (return . (\x -> x-1))
                     nw <- readMVar guiNumWindows
                     when (nw <= 0) mainQuit
                     return ()
+-}
      --
      return () --mainGUI
    return $ PH fig handle
