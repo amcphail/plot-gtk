@@ -49,11 +49,11 @@ guiInit = unsafePerformIO (newMVar False)
 
 initGUIOnce :: IO ()
 initGUIOnce = do
-  init <- readMVar guiInit 
-  when (not init) $ do
+  init_ <- readMVar guiInit 
+  when (not init_) $ do
     _ <- forkOS $ runInBoundThread $ do
       _ <- unsafeInitGUIForThreadedRTS
-      swapMVar guiInit True
+      _ <- swapMVar guiInit True
       mainGUI --return ()
     return ()
   return ()
