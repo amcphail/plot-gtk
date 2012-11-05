@@ -34,3 +34,6 @@
 0.2:
 		* fix window behaviour by initialising once only and counting 
                     open windows to know when to quit 
+
+0.2.0.1:
+		* remove warnings from Gtk.hs:initGuiOnce
