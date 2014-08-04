@@ -37,3 +37,6 @@
 
 0.2.0.1:
 		* remove warnings from Gtk.hs:initGuiOnce
+
+0.2.0.2:
+		* allow pango/cairo v0.13
