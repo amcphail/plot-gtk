@@ -12,7 +12,7 @@
 --
 -----------------------------------------------------------------------------
 
-module Graphics.UI.Gtk.Plot (
+module Graphics.UI.Gtk3.Plot (
                              FigureHandle()
                              -- * Drawing Area
                              , plotNew
@@ -30,7 +30,7 @@ import Control.Monad.Trans
 
 import System.Glib.GObject
 
-import Graphics.UI.Gtk
+import Graphics.UI.Gtk3
 
 import Graphics.Rendering.Plot.Figure
 

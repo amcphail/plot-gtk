@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Graphics.Rendering.Plot.Gtk
--- Copyright   :  (c) A. V. H. McPhail 2010
+-- Module      :  Graphics.Rendering.Plot.Gtk3
+-- Copyright   :  (c) A. V. H. McPhail 2014
 -- License     :  BSD3
 --
 -- Maintainer  :  haskell.vivian.mcphail <at> gmail <dot> com
@@ -12,7 +12,7 @@
 --
 -----------------------------------------------------------------------------
 
-module Graphics.Rendering.Plot.Gtk (
+module Graphics.Rendering.Plot.Gtk3 (
                                     -- * Interface
                                     PlotHandle()
                                     , display, destroy
@@ -29,9 +29,9 @@ import Control.Monad
 
 import Control.Concurrent
 
-import Graphics.UI.Gtk
+import Graphics.UI.Gtk3
 
-import Graphics.UI.Gtk.Plot
+import Graphics.UI.Gtk3.Plot
 
 import Graphics.Rendering.Plot
 
