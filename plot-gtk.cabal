@@ -1,15 +1,15 @@
-Name:                plot-gtk3
-Version:             0.1
+Name:                plot-gtk
+Version:             0.2.0.2
 License:             BSD3
 License-file:        LICENSE
-Copyright:           (c) A.V.H. McPhail 2014
+Copyright:           (c) A.V.H. McPhail 2010, 2012, 2014
 Author:              Vivian McPhail
 Maintainer:          haskell.vivian.mcphail <at> gmail <dot> com
 Stability:           experimental
 Homepage:            http://code.haskell.org/plot
-Synopsis:            GTK3 plots and interaction with GHCi
+Synopsis:            GTK plots and interaction with GHCi
 Description:         
-     Allows use of 'plot' package with GTK3
+     Allows use of 'plot' package with GTK
      .
      * Provides a mechanism to display and update plots from GHCi
      .
@@ -28,7 +28,7 @@ library
                      mtl,
                      process,
                      glib >= 0.11 && < 0.14,
-                     gtk3 >= 0.13 && < 0.14,
+                     gtk >= 0.11 && < 0.14,
                      hmatrix >= 0.10,
                      plot < 0.3
 
@@ -36,7 +36,7 @@ library
 
   hs-source-dirs:    lib
 
-  Exposed-Modules:   Graphics.Rendering.Plot.Gtk3
+  Exposed-Modules:   Graphics.Rendering.Plot.Gtk
                      Graphics.Rendering.Plot.HMatrix
                      Graphics.UI.Gtk.Plot
 
@@ -48,4 +48,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/amcphail/plot-gtk3.git
+  location: https://github.com/amcphail/plot-gtk.git
