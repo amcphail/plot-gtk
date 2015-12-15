@@ -1,5 +1,5 @@
 Name:                plot-gtk
-Version:             0.2.0.3
+Version:             0.2.0.4
 License:             BSD3
 License-file:        LICENSE
 Copyright:           (c) A.V.H. McPhail 2010, 2012, 2014, 2015
@@ -16,7 +16,7 @@ Description:
 
 Category:            Graphics
 
-Tested-with:         GHC==7.8.3
+Tested-with:         GHC==7.10.2
 Cabal-version:       >= 1.8
 Build-type:          Simple
 
@@ -27,8 +27,8 @@ library
   Build-Depends:     base >= 4 && < 5,
                      mtl,
                      process,
-                     glib >= 0.11 && < 0.14,
-                     gtk >= 0.11 && < 0.14,
+                     glib >= 0.11 && < 0.15,
+                     gtk >= 0.11 && < 0.15,
                      hmatrix >= 0.17,
                      plot < 0.3
 
